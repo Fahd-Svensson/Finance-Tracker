@@ -1,0 +1,95 @@
+body {
+    background-color: #0B192C;
+    color: #E2E8F0;
+    margin-left: 15%;
+    margin-right: 10%;
+    font-family: sans-serif; /* Fixed font-style: sans-serif to font-family */
+}
+
+div.po {
+    background-color: #0B192C;
+    color: #E2E8F0;
+    width: 300px;
+    min-height: 350px;
+    padding-right: 70px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    border-radius: 15px;
+    border: 1px solid #334155;
+    box-sizing: border-box;
+}
+
+th, td {
+    text-align: center;
+    padding: 20px 81px; /* Replaced huge right padding with clean cell padding */
+}
+
+label {
+    color: #E2E8F0;
+    font-weight: 500;
+
+}
+
+input {
+    color: #E2E8F0; 
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 16px;
+    padding: 8px 13px;
+    box-sizing: border-box;
+}
+
+hr {
+    border-color: #334155;
+}
+
+div.connector {
+    display: flex;
+    gap: 20px;
+}
+
+div.amoundate {
+    display: flex;
+    gap: 10px;
+}
+
+div.group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Places inputs and buttons on the same row, level with inputs */
+form.form1 {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.inputs-row {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+div.c1 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+div.buttons-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+select {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+    padding: 8px 13px;
+    font-size: 16px;
+}

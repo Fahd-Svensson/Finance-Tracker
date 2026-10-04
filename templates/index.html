@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static' , filename='stylesheet.css')}}">
+    <!-- Load Chart.js CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Expense Tracker Lite</title>
+</head>
+
+<body>
+    <h4>Expense Tracker Lite</h4>
+    <hr>
+
+    <h1>Dashboard</h1>
+    <p style="font-size: 16px;">Track spending, filter by date/category, and visualize instantly.</p>
+
+    <div class="connector">
+        <div class="po" style="width: 700px">
+            <h2>Filters</h2>
+            
+            <div class="container">
+                <form class="form1" method="get" action = "{{url_for('index')}}" >
+                    <div class="inputs-row">
+                        <div class="c1">
+                            <label for="startdate">Start</label>
+                            <input type="date" name="start" value="{{start_str}}" id="start">
+                        </div>
+                        <div class="c1">
+                            <label for="enddate">End</label>
+                            <input type="date" name="end" value = "{{end_str or ''}}" id="end">
+                        </div>
+                        <div class="c1">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" autofocus style="background-color: #1E293B; color: #E2E8F0; border: 1px solid #334155; border-radius: 6px; width: 125px; ;">
+                               <option value =''>All</option>
+                               {% for c in categories%}
+
+                                <option value="{{c}}" {% if selected_category == c %} selected {% endif %}>{{c}}</option>
+                                
+                                {% endfor %}
+                               
+                               
+                                <option value="Electronics">Electronics</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="buttons-row">
+                        <button type="submit" class="btn" style="background-color:#1C3550; color: #4D8EBE; border: 1px solid #2B5585; border-radius: 6px; padding: 10px 20px; font-size: 16px; cursor: pointer;">Apply</button>
+                        <a type="reset" class="btn" href = "{{url_for('index')}}" style="background-color:#1E293B; color: #E2E8F0; border: 1px solid #334155; border-radius: 6px; padding: 10px 20px; font-size: 16px; cursor: pointer;" >Reset</a>
+                    </div>
+                </form>
+            </div>
+            <br>
+            
+            <div class = 'total'>
+                <span class = 'totale' >Total:</span>
+                <span>£{{'%2.f'|format(total or 0)}}</span>
+
+            </div>
+        </div>
+
+        <div class="po" style="box-sizing: border-box;width: 100%;margin-right: 50px;
+        max-width: 500px; padding: 8px 12px;" >
+            <h2>Add Expenses</h2>
+            <form method ='post' action="{{url_for('add')}}">
+                <label for="description">Description</label><br>
+                <input type="text" id="description" name="description" value="eg.Groceries" size="40"><br><br>
+                
+                <div class="amoundate">
+                    <div class="group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" name="amount">
+                    </div>
+                    <div class="group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" value = {{today}}>
+                    </div>
+                </div><br>
+
+                <label for="category_add">Category</label><br>
+                <select name="category" id="category_add" style="background-color: #1E293B; border-radius: 6px; border-color: #334155; color: #E2E8F0;">
+                    {%for c in categories%}
+                    <option value="{{c}}">{{c}}</option>
+                    {% endfor %}
+                </select><br><br>
+                <button type="submit" style="background-color:#1C3550; color: #4D8EBE; border: 1px solid #2B5585; border-radius: 6px; padding: 10px 20px; font-size: 16px; cursor: pointer;">Add Expense</button>
+            </form>
+        </div>
+    </div>
+
+    <br>
+    <!--Global Total-->
+      <div class = 'total'>
+                <span class = 'totalem' >Global Total:</span>
+                <span>£{{'%2.f'|format(total or 0)}}</span>
+
+            </div>
+
+    <div>
+        <table style="border-collapse: collapse; border-color: #334155;">
+            <thead>
+                <tr>
+                    <th colspan="5">Expenses</th>
+                </tr>
+
+
+                <tr style="background-color: #1E293B;">
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+
+
+            </thead>
+            <tbody>
+
+                {% if expenses %}
+                {% for e in expenses%}
+                <tr>
+                    <td>{{e.date.strftime('%Y-%m-%d') if e.date else ''}}</td>
+                    <td>{{e.description}}</td>
+                    <td>{{e.category}}</td>
+                    <td>£{{'%.2f'|format(e.amount)}}</td>
+                    <td>
+                        <form method = 'POST' 
+                        action = "{{url_for('delete' , expense_id=e.id )}}"
+                        onsubmit = "return confirm('Are you sure you want to delete?')">
+                            <button class="DEL" type="submit" style="color:#E65C5C; background-color: #1E293B; border: solid #1E293B;border-radius: 6px; cursor: pointer;">Delete
+
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else%}
+            <tr>
+                <td class = 'noexpenses'>
+                    No expenses yet - add your first one above.
+                </td>
+            </tr>
+
+            {% endif %}
+
+            </tbody>
+        </table>
+    </div>
+    <!--Chat-->
+    <div class = 'cont' style = 'display : flex;'>
+    <div >
+        <h3>By Category</h3>
+        <canvas id = 'catChart' height = '140'></canvas>
+    </div>
+
+    <!--Day chart-->
+    <div>
+    <h3>Spending Over Time</h3>
+    <canvas id="dayChart" height="140"></canvas>
+</div>
+</div>
+
+  <script>
+  // 1. Data passed from Flask/Jinja
+  const catLabels = {{ (cat_labels or []) | tojson }};
+  const catValues = {{ (cat_values or []) | tojson }};
+  const dayLabels = {{ (day_labels or []) | tojson }};
+  const dayValues = {{ (day_values or []) | tojson }};
+
+  // 2. Render Category Pie Chart
+  const catCanvas = document.getElementById('catChart');
+  if (catCanvas && catLabels.length > 0) {
+    new Chart(catCanvas.getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: catLabels,
+        datasets: [{
+          data: catValues,
+          backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#cbd5e1' } }
+        }
+      }
+    });
+  }
+
+  // 3. Render Spending Over Time Bar Chart
+  const dayCanvas = document.getElementById('dayChart');
+  if (dayCanvas && dayLabels.length > 0) {
+    new Chart(dayCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: dayLabels,
+        datasets: [{
+          label: 'Total',
+          data: dayValues, // Fixed syntax error here
+          backgroundColor: '#3B82F6'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#cbd5e1' } }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#cbd5e1' },
+            grid: { color: '#334155' } // Fixed hex code
+          },
+          y: {
+            ticks: { color: '#cbd5e1' },
+            grid: { color: '#334155' } // Fixed hex code
+          }
+        }
+      }
+    });
+  }
+</script>
+ 
+</body>
+</html>
