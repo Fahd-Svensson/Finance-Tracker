@@ -36,9 +36,3 @@ As part of my ongoing development plan, I am currently working to expand this pr
 - 💾 **Database Integration:** Integrating SQL / SQLite to store user credentials and persistent application data dynamically.
 
 ---
-
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-   cd your-repo-name
